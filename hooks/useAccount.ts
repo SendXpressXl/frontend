@@ -7,18 +7,6 @@ let addressLookup = (async () => {
   if (await isConnected()) return getUserInfo()
 })();
 
-// returning the same object identity every time avoids unnecessary re-renders
-const addressObject = {
-  address: '',
-  displayName: '',
-};
-
-const addressToHistoricObject = (address: string) => {
-  addressObject.address = address;
-  addressObject.displayName = `${address.slice(0, 4)}...${address.slice(-4)}`;
-  return addressObject
-};
-
 /**
  * Returns an object containing `address` and `displayName` properties, with
  * the address fetched from Freighter's `getPublicKey` method in a
@@ -32,7 +20,7 @@ const addressToHistoricObject = (address: string) => {
  * NOTE: This does not update the return value if the user changes their
  * Freighter settings; they will need to refresh the page.
  */
-export function useAccount(): typeof addressObject | null {
+export function useAccount(): { address: string; displayName: string } | null {
   const [, setLoading] = useState(address === undefined);
 
   useEffect(() => {
@@ -43,7 +31,10 @@ export function useAccount(): typeof addressObject | null {
       .finally(() => { setLoading(false) });
   }, []);
 
-  if (address) return addressToHistoricObject(address);
+  if (!address) return null;
 
-  return null;
-};
+  return {
+    address,
+    displayName: `${address.slice(0, 4)}...${address.slice(-4)}`,
+  };
+}
