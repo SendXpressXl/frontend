@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 
 const NAV_LINKS = [
   { label: 'Marketplace', href: '/marketplace' },
+  { label: 'My Deals', href: '/deals' },
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'For Suppliers', href: '/sell' },
 ];
