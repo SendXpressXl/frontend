@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from 'react'
 import { AmountInput, Button, Checkbox } from '../../atoms'
 import { TransactionModal } from '../../molecules/transaction-modal'
 import { Utils } from '../../../shared/utils'
+import { useCurrencyContext } from '../../../hooks/CurrencyContext'
 import styles from './style.module.css'
 import { Spacer } from '../../atoms/spacer'
 
@@ -27,6 +28,7 @@ export interface IResultSubmit {
  * once RPC integration is wired up in shared/contracts.ts.
  */
 const FormPledge: FunctionComponent<IFormPledgeProps> = props => {
+  const { formatConverted } = useCurrencyContext()
   const [balance] = React.useState<BigInt>(BigInt(0))
   const [decimals] = React.useState<number>(props.decimals)
   const [symbol] = React.useState<string>(props.symbol ?? 'XLM')
@@ -67,7 +69,7 @@ const FormPledge: FunctionComponent<IFormPledgeProps> = props => {
         {[100, 250, 500, 1000].map(v => (
           <Checkbox
             key={v}
-            title={`${v} ${props.symbol}`}
+            title={`${v} ${props.symbol}${formatConverted(v) ? ` (${formatConverted(v)})` : ''}`}
             value={v}
             isChecked={amount === v}
             setAmount={setAmount}
@@ -95,7 +97,11 @@ const FormPledge: FunctionComponent<IFormPledgeProps> = props => {
           <Spacer rem={1} />
           <div className={styles.wrapper}>
             <div>
-              <h6>Your balance: {Utils.formatAmount(balance, decimals)} {symbol}</h6>
+              <h6>Your balance: {Utils.formatAmount(balance, decimals)} {symbol}
+                {formatConverted(Number(balance) / 10 ** decimals) && (
+                  <span className="text-xs text-gray-400 ml-1">({formatConverted(Number(balance) / 10 ** decimals)})</span>
+                )}
+              </h6>
             </div>
           </div>
         </div>
