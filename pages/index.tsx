@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { Navbar } from '../components/organisms'
 import { useCurrencyContext } from '../hooks/CurrencyContext'
+import { TrustBadge, TrustScoreBar } from '../components/atoms'
+import { TrustDetailsModal } from '../components/molecules'
+import type { TrustScore } from '../shared/types'
 
 /* ── Data ─────────────────────────────────────────────────────── */
 const FEATURES = [
@@ -121,8 +124,22 @@ function TradeTicker() {
 }
 
 /* ── Page ──────────────────────────────────────────────────────── */
+const MOCK_TRUST_SCORE: TrustScore = {
+  address: 'GBXNQ…F4PL',
+  score: 87,
+  level: 'high',
+  completedDeals: 847,
+  disputedDeals: 12,
+  resolvedInFavor: 9,
+  avgRating: 4.8,
+  accountAgeDays: 420,
+  verificationStatus: 'verified',
+}
+
 const Home: NextPage = () => {
   const { formatConverted } = useCurrencyContext()
+  const [trustModalOpen, setTrustModalOpen] = useState(false)
+
   return (
     <>
       <Head>
@@ -191,9 +208,16 @@ const Home: NextPage = () => {
                   <div className="flex items-center gap-3 mb-5 pb-5 border-b border-zinc-100">
                     <div className="w-10 h-10 rounded-lg bg-zinc-100 flex items-center justify-center text-xl shrink-0">🇨🇳</div>
                     <div className="flex-1">
-                      <div className="text-sm font-semibold text-zinc-900">ShenTex Manufacturing</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-zinc-900">ShenTex Manufacturing</span>
+                        <TrustBadge level="high" verification="verified" size="sm" />
+                      </div>
                       <div className="text-xs text-zinc-400 mt-0.5">Shenzhen, China · ⭐ 4.9 · 847 trades</div>
                     </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <TrustScoreBar trustScore={MOCK_TRUST_SCORE} onClick={() => setTrustModalOpen(true)} />
                   </div>
 
                   <div className="space-y-2.5 mb-5">
@@ -412,6 +436,13 @@ const Home: NextPage = () => {
           </div>
         </footer>
       </div>
+
+      <TrustDetailsModal
+        trustScore={MOCK_TRUST_SCORE}
+        supplierName="ShenTex Manufacturing"
+        isOpen={trustModalOpen}
+        onClose={() => setTrustModalOpen(false)}
+      />
     </>
   )
 }
