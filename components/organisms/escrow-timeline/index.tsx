@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Deal, DealStep, DisputeInfo } from '../../../shared/types'
 import { Utils } from '../../../shared/utils'
+import { useCurrencyContext } from '../../../hooks/CurrencyContext'
 import moment from 'moment'
 
 interface EscrowTimelineProps {
@@ -120,6 +121,9 @@ function InstallmentProgress({ milestones }: { milestones: Deal['milestones'] })
             </span>
             <span className="ml-auto text-xs text-gray-400">
               {Number(m.amount) / 10 ** m.decimals} {m.symbol}
+              {formatConverted(Number(m.amount) / 10 ** m.decimals) && (
+                <span className="block text-[10px]">{formatConverted(Number(m.amount) / 10 ** m.decimals)}</span>
+              )}
             </span>
             {m.timestamp && (
               <span className="text-xs text-gray-400">{moment(m.timestamp).format('MMM D, h:mm A')}</span>
@@ -155,6 +159,7 @@ const EscrowTimeline: FunctionComponent<EscrowTimelineProps> = ({
   onRaiseDispute,
   onReleaseFunds,
 }) => {
+  const { formatConverted } = useCurrencyContext()
   const isCancelled = deal.status === 'cancelled'
   const currentStepIndex = deal.steps.findIndex((s) => s.current)
   const cancelledStep = isCancelled ? deal.steps.find((s) => !s.completed && !s.current) : null
@@ -201,6 +206,11 @@ const EscrowTimeline: FunctionComponent<EscrowTimelineProps> = ({
             <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
               {Number(deal.amount) / 10 ** deal.decimals} {deal.symbol}
             </span>
+            {formatConverted(Number(deal.amount) / 10 ** deal.decimals) && (
+              <span className="block text-[10px] text-emerald-500 dark:text-emerald-500 mt-0.5">
+                {formatConverted(Number(deal.amount) / 10 ** deal.decimals)}
+              </span>
+            )}
           </div>
           {deal.txHash && <TxHashLink hash={deal.txHash} />}
         </div>
