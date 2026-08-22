@@ -29,6 +29,7 @@ export const wagmiConfig = createConfig(
   getDefaultConfig({
     appName: 'SendXpress',
     chains: SUPPORTED_CHAINS,
-    walletConnectProjectId: 'demo', // placeholder for prototype
+    // TODO: replace with real WalletConnect project ID before prod deploy
+    walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'demo',
   })
 )

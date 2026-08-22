@@ -45,7 +45,8 @@ export function FundDealModal({ deal, isOpen, onClose }: FundDealModalProps) {
   }
 
   const handleCctpComplete = () => {
-    // In a real app, this would update the deal status
+    // TODO: update deal status on-chain after CCTP transfer completes
+    handleClose()
   }
 
   const formattedAmount = Utils.formatAmount(deal.amount, deal.decimals)
@@ -125,8 +126,9 @@ export function FundDealModal({ deal, isOpen, onClose }: FundDealModalProps) {
                 </svg>
                 Back
               </button>
+              {/* TODO: pass actual Freighter account once wallet integration is wired */}
               <FormPledge
-                account=""
+                account="stellar-placeholder"
                 decimals={deal.decimals}
                 symbol={deal.symbol}
                 onPledge={handleClose}
