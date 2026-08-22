@@ -3,7 +3,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { Deal } from '../../../shared/types'
 import { EvmWalletConnect } from '../../molecules/evm-wallet-connect'
 import { CrossChainDepositForm } from '../../molecules/cross-chain-deposit-form'
-import { CctpStatusTracker, CctpPhase } from '../cctp-status-tracker'
+import { CctpStatusTracker } from '../cctp-status-tracker'
 import { FormPledge } from '../../molecules/form-pledge'
 import { Utils } from '../../../shared/utils'
 
@@ -19,21 +19,18 @@ type EvmStep = 'wallet' | 'deposit' | 'tracking'
 export function FundDealModal({ deal, isOpen, onClose }: FundDealModalProps) {
   const [method, setMethod] = useState<FundingMethod>(null)
   const [evmStep, setEvmStep] = useState<EvmStep>('wallet')
-  const [evmAddress, setEvmAddress] = useState<string | null>(null)
   const [cctpTxHash, setCctpTxHash] = useState<string | null>(null)
   const [selectedChainId, setSelectedChainId] = useState<number | null>(null)
 
   const handleClose = () => {
     setMethod(null)
     setEvmStep('wallet')
-    setEvmAddress(null)
     setCctpTxHash(null)
     setSelectedChainId(null)
     onClose()
   }
 
-  const handleEvmConnected = (address: string) => {
-    setEvmAddress(address)
+  const handleEvmConnected = () => {
     setEvmStep('deposit')
   }
 
