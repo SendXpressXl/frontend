@@ -3,6 +3,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { Navbar } from '../components/organisms'
+import { useCurrencyContext } from '../hooks/CurrencyContext'
 
 /* ── Data ─────────────────────────────────────────────────────── */
 const FEATURES = [
@@ -83,16 +84,17 @@ const TESTIMONIALS = [
 ]
 
 const TICKS = [
-  { f: '🇳🇬 Lagos',        t: 'Fabric — 2,400 yards',  amt: '890 XLM', status: 'Escrow released' },
-  { f: '🇨🇳 Shenzhen',     t: 'Electronics — 500 units',amt: '4,200 XLM',status: 'In transit' },
-  { f: '🇮🇳 Mumbai',       t: 'Textiles — 1,000 m',    amt: '620 XLM', status: 'Delivered' },
-  { f: '🇧🇷 São Paulo',    t: 'Coffee — 200 kg',        amt: '310 XLM', status: 'Escrow released' },
-  { f: '🇩🇪 Hamburg',      t: 'Machinery parts',        amt: '7,800 XLM',status: 'In transit' },
-  { f: '🇵🇭 Manila',       t: 'Furniture — 12 sets',   amt: '1,100 XLM',status: 'Delivered' },
+  { f: '🇳🇬 Lagos',        t: 'Fabric — 2,400 yards',  xlm: 890, status: 'Escrow released' },
+  { f: '🇨🇳 Shenzhen',     t: 'Electronics — 500 units',xlm: 4200, status: 'In transit' },
+  { f: '🇮🇳 Mumbai',       t: 'Textiles — 1,000 m',    xlm: 620, status: 'Delivered' },
+  { f: '🇧🇷 São Paulo',    t: 'Coffee — 200 kg',        xlm: 310, status: 'Escrow released' },
+  { f: '🇩🇪 Hamburg',      t: 'Machinery parts',        xlm: 7800, status: 'In transit' },
+  { f: '🇵🇭 Manila',       t: 'Furniture — 12 sets',   xlm: 1100, status: 'Delivered' },
 ]
 
 /* ── Ticker ────────────────────────────────────────────────────── */
 function TradeTicker() {
+  const { formatConverted } = useCurrencyContext()
   const items = [...TICKS, ...TICKS]
   return (
     <div className="relative overflow-hidden py-3 border-y border-zinc-100 bg-zinc-50">
@@ -105,7 +107,10 @@ function TradeTicker() {
             <span className="text-xs font-medium text-zinc-700">{item.f}</span>
             <span className="text-xs text-zinc-400">·</span>
             <span className="text-xs text-zinc-500">{item.t}</span>
-            <span className="text-xs font-semibold text-zinc-800">{item.amt}</span>
+            <span className="text-xs font-semibold text-zinc-800">
+              {item.xlm.toLocaleString()} XLM
+              {formatConverted(item.xlm) && <span className="text-zinc-400 ml-1">({formatConverted(item.xlm)})</span>}
+            </span>
             <span className="text-xs text-emerald-600 font-medium">{item.status}</span>
             <span className="text-zinc-200 mx-2">|</span>
           </div>
@@ -117,6 +122,7 @@ function TradeTicker() {
 
 /* ── Page ──────────────────────────────────────────────────────── */
 const Home: NextPage = () => {
+  const { formatConverted } = useCurrencyContext()
   return (
     <>
       <Head>
@@ -193,7 +199,7 @@ const Home: NextPage = () => {
                   <div className="space-y-2.5 mb-5">
                     {[
                       { l: 'Product',  v: 'Cotton Fabric — 2,400 yards' },
-                      { l: 'Amount',   v: '3,200 XLM' },
+                      { l: 'Amount',   v: `3,200 XLM${formatConverted(3200) ? ` (${formatConverted(3200)})` : ''}` },
                       { l: 'Shipping', v: 'DHL Express · 7–10 days' },
                       { l: 'Status',   v: 'In transit' },
                     ].map(({ l, v }) => (
