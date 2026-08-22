@@ -9,6 +9,7 @@ interface EscrowTimelineProps {
   onMarkReceived?: () => void
   onRaiseDispute?: () => void
   onReleaseFunds?: () => void
+  onFundDeal?: () => void
 }
 
 function StatusIcon({ step, isLast }: { step: DealStep; isLast: boolean }) {
@@ -159,6 +160,7 @@ const EscrowTimeline: FunctionComponent<EscrowTimelineProps> = ({
   onMarkReceived,
   onRaiseDispute,
   onReleaseFunds,
+  onFundDeal,
 }) => {
   const { formatConverted } = useCurrencyContext()
   const isCancelled = deal.status === 'cancelled'
@@ -169,6 +171,16 @@ const EscrowTimeline: FunctionComponent<EscrowTimelineProps> = ({
     if (!step.current) return null
 
     switch (step.id) {
+      case 'created':
+        if (!onFundDeal) return null
+        return (
+          <button
+            onClick={onFundDeal}
+            className="mt-3 w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-brand/20 transition-all hover:bg-brand-dark hover:shadow-lg hover:shadow-brand/30 active:scale-[0.98]"
+          >
+            Fund Deal
+          </button>
+        )
       case 'goods_shipped':
         return (
           <button
