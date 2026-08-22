@@ -1,10 +1,13 @@
 import type { AppProps } from 'next/app'
 import '../styles/globals.css'
+import { CurrencyProvider } from '../hooks/CurrencyContext'
 
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Component {...pageProps} />
+    <CurrencyProvider>
+      <Component {...pageProps} />
+    </CurrencyProvider>
   );
 }
 
