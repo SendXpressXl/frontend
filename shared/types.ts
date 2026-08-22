@@ -83,3 +83,34 @@ export interface EvmChain {
   usdcAddress: string
   rpcUrl: string
 }
+
+// Trust & Verification types
+
+export type TrustLevel = 'high' | 'medium' | 'low' | 'new'
+
+export type VerificationStatus = 'verified' | 'pending' | 'unverified'
+
+export interface TrustScore {
+  address: string
+  score: number            // 0-100
+  level: TrustLevel
+  completedDeals: number
+  disputedDeals: number
+  resolvedInFavor: number  // disputes resolved in seller's favor
+  avgRating: number        // 0-5
+  accountAgeDays: number
+  verificationStatus: VerificationStatus
+  lastActivityAt?: Date
+}
+
+export interface SupplierProfile {
+  address: string
+  name: string
+  location: string
+  country: string
+  countryCode: string
+  avatar?: string
+  description?: string
+  trustScore: TrustScore
+  joinedAt: Date
+}
