@@ -1,6 +1,7 @@
 import React from 'react'
 import { Spacer } from '../../atoms/spacer'
 import { Utils } from '../../../shared/utils'
+import { useCurrencyContext } from '../../../hooks/CurrencyContext'
 
 export interface IDepositsProps {
   address: string
@@ -16,6 +17,7 @@ export interface IDepositsProps {
  * is wired up in shared/contracts.ts.
  */
 export function Deposits(props: IDepositsProps) {
+  const { formatConverted } = useCurrencyContext()
   // Placeholder — will be replaced with contract call
   const balance = BigInt(0)
 
@@ -32,6 +34,11 @@ export function Deposits(props: IDepositsProps) {
           {Utils.formatAmount(balance, props.decimals)}{' '}
           <span title={props.name}>{props.symbol}</span>
         </span>
+        {formatConverted(Number(balance) / 10 ** props.decimals) && (
+          <span className="text-sm text-gray-400">
+            ({formatConverted(Number(balance) / 10 ** props.decimals)})
+          </span>
+        )}
       </div>
     </>
   )

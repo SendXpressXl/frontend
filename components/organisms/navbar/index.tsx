@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { CurrencySelector } from '../../atoms/currency-selector';
 
 const NAV_LINKS = [
   { label: 'Marketplace', href: '/marketplace' },
@@ -64,6 +65,7 @@ export function Navbar() {
 
           {/* Desktop right */}
           <div className="hidden md:flex items-center gap-3">
+            <CurrencySelector />
             <Link
               href="/login"
               className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors px-2"
@@ -111,6 +113,9 @@ export function Navbar() {
             </Link>
           ))}
           <div className="pt-3 border-t border-zinc-100 flex flex-col gap-2 mt-1">
+            <div className="px-3 py-2">
+              <CurrencySelector />
+            </div>
             <Link
               href="/marketplace"
               onClick={close}
