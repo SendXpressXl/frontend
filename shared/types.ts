@@ -49,4 +49,37 @@ export interface Deal {
   createdAt: Date
   updatedAt: Date
   txHash?: string
+  fundingMethod?: 'stellar' | 'evm'
+}
+
+// Cross-chain (CCTP) types
+
+export type CctpPhase = 'burning' | 'attesting' | 'minting' | 'complete'
+
+export interface CctpTransaction {
+  id: string
+  dealId: string
+  sourceChainId: number
+  sourceChainName: string
+  destChainName: string
+  amount: string
+  usdcAmount: number
+  txHash: string
+  phase: CctpPhase
+  startedAt: Date
+  completedAt?: Date
+  phases: {
+    burning?: Date
+    attesting?: Date
+    minting?: Date
+    complete?: Date
+  }
+}
+
+export interface EvmChain {
+  id: number
+  name: string
+  icon: string
+  usdcAddress: string
+  rpcUrl: string
 }
