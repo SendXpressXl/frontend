@@ -83,6 +83,7 @@ function DisputeBranch({ dispute }: { dispute: DisputeInfo }) {
 }
 
 function InstallmentProgress({ milestones }: { milestones: Deal['milestones'] }) {
+  const { formatConverted } = useCurrencyContext()
   if (!milestones || milestones.length === 0) return null
 
   const completed = milestones.filter((m) => m.completed).length
