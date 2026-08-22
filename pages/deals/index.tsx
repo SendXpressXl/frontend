@@ -2,9 +2,30 @@ import React, { useState } from 'react'
 import Head from 'next/head'
 import { Navbar } from '../../components/organisms'
 import { EscrowTimeline } from '../../components/organisms/escrow-timeline'
+import { FundDealModal } from '../../components/organisms/fund-deal-modal'
 import { Deal } from '../../shared/types'
 
 const mockDeals: Deal[] = [
+  {
+    id: 'DL-2024-0860',
+    title: 'Wireless Sensor Array — 100 Units',
+    buyer: 'GCKV7…A3QM',
+    seller: 'GBXNQ…F4PL',
+    amount: BigInt(6800_0000000),
+    decimals: 7,
+    symbol: 'XLM',
+    status: 'created',
+    deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+    steps: [
+      { id: 'created', label: 'Deal Created', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), completed: false, current: true },
+      { id: 'funds_locked', label: 'Funds Locked', completed: false, current: false },
+      { id: 'goods_shipped', label: 'Goods Shipped', completed: false, current: false },
+      { id: 'received', label: 'Received', completed: false, current: false },
+      { id: 'released', label: 'Released', completed: false, current: false },
+    ],
+  },
   {
     id: 'DL-2024-0847',
     title: 'Bulk Electronics — 500x Raspberry Pi 5',
@@ -102,6 +123,7 @@ type TabFilter = 'all' | 'active' | 'disputed' | 'completed'
 
 export default function DealsPage() {
   const [activeTab, setActiveTab] = useState<TabFilter>('all')
+  const [fundDeal, setFundDeal] = useState<Deal | null>(null)
 
   const filteredDeals = mockDeals.filter((deal) => {
     if (activeTab === 'all') return true
@@ -181,11 +203,20 @@ export default function DealsPage() {
                   onMarkReceived={() => alert(`Marked ${deal.id} as received`)}
                   onRaiseDispute={() => alert(`Dispute raised for ${deal.id}`)}
                   onReleaseFunds={() => alert(`Funds released for ${deal.id}`)}
+                  onFundDeal={() => setFundDeal(deal)}
                 />
               ))
             )}
           </div>
         </main>
+
+        {fundDeal && (
+          <FundDealModal
+            deal={fundDeal}
+            isOpen={!!fundDeal}
+            onClose={() => setFundDeal(null)}
+          />
+        )}
       </div>
     </>
   )
