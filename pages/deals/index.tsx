@@ -3,7 +3,8 @@ import Head from 'next/head'
 import { Navbar } from '../../components/organisms'
 import { EscrowTimeline } from '../../components/organisms/escrow-timeline'
 import { FundDealModal } from '../../components/organisms/fund-deal-modal'
-import { Deal } from '../../shared/types'
+import { TrustBadge } from '../../components/atoms'
+import { Deal, TrustScore } from '../../shared/types'
 
 const mockDeals: Deal[] = [
   {
@@ -121,6 +122,15 @@ const mockDeals: Deal[] = [
 
 type TabFilter = 'all' | 'active' | 'disputed' | 'completed'
 
+// Mock trust scores for sellers — in production these come from the
+// on-chain trust contract and are fetched per seller address.
+const SELLER_TRUST: Record<string, TrustScore> = {
+  'GBXNQ…F4PL': { address: 'GBXNQ…F4PL', score: 87, level: 'high', completedDeals: 847, disputedDeals: 12, resolvedInFavor: 9, avgRating: 4.8, accountAgeDays: 420, verificationStatus: 'verified' },
+  'GCQUH…2NRL': { address: 'GCQUH…2NRL', score: 62, level: 'medium', completedDeals: 34, disputedDeals: 3, resolvedInFavor: 2, avgRating: 4.2, accountAgeDays: 180, verificationStatus: 'verified' },
+  'GAXPL…7DWR': { address: 'GAXPL…7DWR', score: 15, level: 'new', completedDeals: 2, disputedDeals: 0, resolvedInFavor: 0, avgRating: 3.5, accountAgeDays: 14, verificationStatus: 'unverified' },
+  'GDKLR…9BFN': { address: 'GDKLR…9BFN', score: 94, level: 'high', completedDeals: 1203, disputedDeals: 8, resolvedInFavor: 7, avgRating: 4.9, accountAgeDays: 680, verificationStatus: 'verified' },
+}
+
 export default function DealsPage() {
   const [activeTab, setActiveTab] = useState<TabFilter>('all')
   const [fundDeal, setFundDeal] = useState<Deal | null>(null)
@@ -196,16 +206,27 @@ export default function DealsPage() {
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">No deals match this filter.</p>
               </div>
             ) : (
-              filteredDeals.map((deal) => (
-                <EscrowTimeline
-                  key={deal.id}
-                  deal={deal}
-                  onMarkReceived={() => alert(`Marked ${deal.id} as received`)}
-                  onRaiseDispute={() => alert(`Dispute raised for ${deal.id}`)}
-                  onReleaseFunds={() => alert(`Funds released for ${deal.id}`)}
-                  onFundDeal={() => setFundDeal(deal)}
-                />
-              ))
+              filteredDeals.map((deal) => {
+                const sellerTrust = SELLER_TRUST[deal.seller]
+                return (
+                  <div key={deal.id}>
+                    {sellerTrust && (
+                      <div className="mb-2 flex items-center gap-2 pl-1">
+                        <span className="text-xs text-gray-400">Seller:</span>
+                        <TrustBadge level={sellerTrust.level} verification={sellerTrust.verificationStatus} size="sm" />
+                        <span className="text-xs text-gray-500">{sellerTrust.score}/100</span>
+                      </div>
+                    )}
+                    <EscrowTimeline
+                      deal={deal}
+                      onMarkReceived={() => alert(`Marked ${deal.id} as received`)}
+                      onRaiseDispute={() => alert(`Dispute raised for ${deal.id}`)}
+                      onReleaseFunds={() => alert(`Funds released for ${deal.id}`)}
+                      onFundDeal={() => setFundDeal(deal)}
+                    />
+                  </div>
+                )
+              })
             )}
           </div>
         </main>
