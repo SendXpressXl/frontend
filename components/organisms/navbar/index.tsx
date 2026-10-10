@@ -6,6 +6,7 @@ import { CurrencySelector } from '../../atoms/currency-selector';
 const NAV_LINKS = [
   { label: 'Marketplace', href: '/marketplace' },
   { label: 'My Deals', href: '/deals' },
+  { label: 'Analytics', href: '/analytics' },
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'For Suppliers', href: '/sell' },
 ];
